@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d9cd1e2beff79435a8694d627d3aca07
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 176695
+  packageName: GUI Pro - Casual Game
+  packageVersion: 4.0.3
+  assetPath: Assets/Layer Lab/GUI Pro-CasualGame/Prefabs/Prefabs_DemoScene_Panels/Popup_Pass.prefab
+  uploadId: 666128
