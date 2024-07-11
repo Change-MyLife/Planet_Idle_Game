@@ -1,18 +1,13 @@
+using Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Bunker : MonoBehaviour
 {
-    int Level = 0;
-
+    BunkerData _data;
     Queue<Enemy> Q_enemys = new Queue<Enemy>();
-
-    public float attactSpeed = 1f;         // 1sec
-    float _attackDmg = 1f;
-    float attactRange = 1f;
-    float CriticalProbability = 1f;
-    float CriticalDamage = 1.5f;
+    CircleCollider2D _circleCollider;
 
     Enemy _target;
 
@@ -21,6 +16,16 @@ public class Bunker : MonoBehaviour
     private void Start()
     {
         Q_enemys.Clear();
+
+        _circleCollider = GetComponent<CircleCollider2D>();
+
+        Bind();
+    }
+
+    void Bind()
+    {
+        _data = DataManager.instance.Bunker;
+        SetAttackRange();
     }
 
     void Update()
@@ -28,35 +33,77 @@ public class Bunker : MonoBehaviour
         Attack();
     }
 
+    // 공격
     void Attack()
     {
         if (_time < 1)
         {
-            _time += (Time.deltaTime * attactSpeed);
+            _time += Time.deltaTime * _data.Status.fireRate;
         }
         else if (_time >= 1)
         {
             _time = 0f;
-            if (Q_enemys.Count > 0)
+
+            if (_target == null && Q_enemys.Count > 0)
             {
-                if (_target != null)
+                _target = Q_enemys.Dequeue();
+            }
+
+            if (_target != null)
+            {
+                if(CalculateProbability(_data.Status.criticalProbability))
                 {
-                    _target.UnderAttack(_attackDmg);
+                    _target.UnderAttack(_data.Status.damage * _data.Status.criticalDamage);
                 }
                 else
                 {
-                    _target = Q_enemys.Dequeue();
-                    _target.UnderAttack(_attackDmg);
+                    _target.UnderAttack(_data.Status.damage);
                 }
             }
         }
     }
 
+    // 공격받음
+    public void UnderAttack(float _dmg)
+    {
+        if(!CalculateProbability(_data.Status.evasionRate))
+        {
+            DataManager.instance.Bunker.SetHp(_dmg - _data.Status.defense);
+        }
+
+        if (_data.Status.hp <= 0)
+        {
+            Debug.Log("DIE");
+        }
+    }
+
+    // 확률계산기
+    bool CalculateProbability(float _probability)
+    {
+        float n = Random.Range(0.00f, 100.00f);
+        n = Mathf.Floor(n * 100f) / 100f;
+
+        if(n <= _probability)
+        {
+            // Critical
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
             Q_enemys.Enqueue(collision.gameObject.transform.GetComponent<Enemy>());
         }
+    }
+
+    public void SetAttackRange()
+    {
+        _circleCollider.radius = _data.Status.attackRange;
     }
 }

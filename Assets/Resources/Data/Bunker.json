@@ -1,0 +1,34 @@
+{
+    "id": 1,
+    "name": "BunkerData",
+    "count": {
+        "damage": 0,
+        "fireRate": 0,
+        "attackRange": 0,
+        "criticalProbability": 0,
+        "criticalDamage": 0,
+        "hp": 0,
+        "defense": 0,
+        "evasionRate": 0
+    },
+    "original": {
+        "damage": 1.0,
+        "fireRate": 1.0,
+        "attackRange": 1.0,
+        "criticalProbability": 1.0,
+        "criticalDamage": 1.1,
+        "hp": 100.0,
+        "defense": 1.0,
+        "evasionRate": 0.0
+    },
+    "increase": {
+        "damage": 0.1,
+        "fireRate": 0.5,
+        "attackRange": 0.1,
+        "criticalProbability": 1.0,
+        "criticalDamage": 0.05,
+        "hp": 10.0,
+        "defense": 0.5,
+        "evasionRate": 1.0
+    }
+}
