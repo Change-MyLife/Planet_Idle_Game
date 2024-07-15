@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class Bunker : MonoBehaviour
 {
+    public DrawradiusAround DrawradiusAround;
+
     BunkerData _data;
-    Queue<Enemy> Q_enemys = new Queue<Enemy>();
     CircleCollider2D _circleCollider;
 
+    Queue<Enemy> Q_enemys = new Queue<Enemy>();
     Enemy _target;
 
     float _time = 0f;
@@ -105,5 +107,6 @@ public class Bunker : MonoBehaviour
     public void SetAttackRange()
     {
         _circleCollider.radius = _data.Status.attackRange;
+        DrawradiusAround.ChangeRadius(_data.Status.attackRange);
     }
 }
