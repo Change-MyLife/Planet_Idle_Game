@@ -8,7 +8,9 @@ using UnityEngine.UI;
 public class EnemySpawn : MonoBehaviour
 {
     public WaveData _data;
-    public GameObject EnemyPrefab;
+    public List<GameObject> Enemies;
+    private List<GameObject> _normalEnemies = new List<GameObject>();
+    private List<GameObject> _epicEnemies = new List<GameObject>();
 
     public CircleCollider2D MinCircle;
     public CircleCollider2D MaxCircle;
@@ -24,6 +26,9 @@ public class EnemySpawn : MonoBehaviour
     int _enemyCount = 0;
     int _waveCount = 0;
 
+    int _normalIndex = 0;
+    int _epicIndex = 0;
+
     private void Start()
     {
         _data = DataManager.instance.Wave;
@@ -31,6 +36,23 @@ public class EnemySpawn : MonoBehaviour
 
         _minDistance = MinCircle.radius;
         _maxDistance = MaxCircle.radius;
+
+        BindEnemy();
+    }
+
+    void BindEnemy()
+    {
+        foreach (GameObject enemy in Enemies)
+        {
+            if(enemy.layer == LayerMask.NameToLayer("NormalEnemy"))
+            {
+                _normalEnemies.Add(enemy);
+            }
+            else if(enemy.layer == LayerMask.NameToLayer("EpicEnemy"))
+            {
+                _epicEnemies.Add(enemy);
+            }
+        }
     }
 
     private void Update()
@@ -42,24 +64,25 @@ public class EnemySpawn : MonoBehaviour
         else if(_time >= 1)
         {
             _time = 0f;
-            Spawn();
+            NormalEnmeySpawn();
         }
     }
 
-    void Spawn()
+    void NormalEnmeySpawn()
     {
         _spawnCount = _data.Wave.enemy;
         _maxSpawnCount = _data.Wave.maxEnemy;
 
-        for(int i = 0; i < _spawnCount; i++)
+        for (int i = 0; i < _spawnCount; i++)
         {
-            if(_enemyCount >= _maxSpawnCount)
+            if (_enemyCount >= _maxSpawnCount)
             {
                 break;
             }
 
+            if (_normalEnemies.Count == 0) return;
             //spawn enemy
-            GameObject enemy = Instantiate(EnemyPrefab, transform, false);
+            GameObject enemy = Instantiate(_normalEnemies[_normalIndex], transform, false);
             enemy.transform.localPosition = RandomPosition();
             enemy.GetComponent<Enemy>().SetValue(_data.Wave.hp, _data.Wave.damage);
             enemy.GetComponent<Enemy>()._enemySpawn = transform.GetComponent<EnemySpawn>();
@@ -67,11 +90,25 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    void EpicEnmeySpawn()
+    {
+        if(_epicEnemies.Count == 0) return;
+        GameObject enemy = Instantiate(_epicEnemies[_epicIndex], transform, false);
+        enemy.transform.localPosition = RandomPosition();
+        enemy.GetComponent<Enemy>()._enemySpawn = transform.GetComponent<EnemySpawn>();
+    }
+
     // 다음 웨이브
     void NextWave()
     {
         _data.NextWave();
         Text_Wave.text = _data.count.ToString();
+
+        // 10라운드
+        if(_data.count % 10 == 0 )
+        {
+            EpicEnmeySpawn();
+        }
     }
 
     public void DeCountEnemy()

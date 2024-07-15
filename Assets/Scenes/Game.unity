@@ -2353,8 +2353,9 @@ MonoBehaviour:
       maxEnemy: 0
       spawnTime: 0
       enemy: 0
-  EnemyPrefab: {fileID: 5956552461555954478, guid: 9cd27f573339bc241913ebe7662b2f1e,
-    type: 3}
+  Enemies:
+  - {fileID: 5956552461555954478, guid: 9cd27f573339bc241913ebe7662b2f1e, type: 3}
+  - {fileID: 5956552461555954478, guid: 97edce30e73db0a45a104e4d85628860, type: 3}
   MinCircle: {fileID: 1293653889}
   MaxCircle: {fileID: 1293653888}
   Text_Wave: {fileID: 75882607}

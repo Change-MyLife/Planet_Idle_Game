@@ -12,10 +12,11 @@ public class DrawradiusAround : MonoBehaviour
     public float yradius = 5;
     LineRenderer line;
 
-    void Start()
+    private void Awake()
     {
         init();
     }
+
     void init()
     {
         line = gameObject.GetComponent<LineRenderer>();
