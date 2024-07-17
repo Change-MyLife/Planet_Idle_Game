@@ -37,22 +37,34 @@ public class MainSlot : MonoBehaviour
 
     void OnClickAttackDmgButton()
     {
-        DataManager.instance.Bunker.IncreaseDamage();
-        Text_AttackDmg.text = "dmg : " + DataManager.instance.Bunker.Status.damage;
+        if(GameManager.Instance.UpgradeCoin(DataManager.instance.Bunker.Cost.damage))
+        {
+            DataManager.instance.Bunker.IncreaseDamage();
+            DataManager.instance.Bunker.SetCost();
+            Text_AttackDmg.text = "dmg : " + DataManager.instance.Bunker.Cost.damage;
+        }
     }
 
     void OnClickAttackRangeButton()
     {
-        DataManager.instance.Bunker.IncreaseAttackRange();
-        _bunker.SetAttackRange();
-        Text_AttackRange.text = "range : " + DataManager.instance.Bunker.Status.attackRange;
+        if(GameManager.Instance.UpgradeCoin(DataManager.instance.Bunker.Cost.attackRange))
+        {
+            DataManager.instance.Bunker.IncreaseAttackRange();
+            _bunker.SetAttackRange();
+            DataManager.instance.Bunker.SetCost();
+            Text_AttackRange.text = "range : " + DataManager.instance.Bunker.Cost.attackRange;
+        }
     }
 
     
     void OnClickAttackSpeedButton()
     {
-        DataManager.instance.Bunker.IncreaseFireRate();
-        Text_AttackSpeed.text = "firerate : " + DataManager.instance.Bunker.Status.fireRate;
+        if(GameManager.Instance.UpgradeCoin(DataManager.instance.Bunker.Cost.fireRate))
+        {
+            DataManager.instance.Bunker.IncreaseFireRate();
+            DataManager.instance.Bunker.SetCost();
+            Text_AttackSpeed.text = "firerate : " + DataManager.instance.Bunker.Cost.fireRate;
+        }
     }
 
     void OnClickCriticalProbabilityButton()

@@ -36,11 +36,17 @@ namespace Data
         {
             get { return _wave; }
         }
+        CreditType _credit = new CreditType();
+        public CreditType Credit
+        {
+            get { return _credit; }
+        }
 
         void init()
         {
             LoadBunker();
             LoadWave();
+            LoadCredit();
         }
 
         // 벙커 데이터
@@ -48,6 +54,7 @@ namespace Data
         {
             _bunker = LoadJson<BunkerData>("Bunker");
             _bunker.SetValue();
+            _bunker.SetCost();
         }
 
         // 적 웨이브 데이터
@@ -55,6 +62,11 @@ namespace Data
         {
             _wave = LoadJson<WaveData>("EnemyWave");
             _wave.SetValue();
+        }
+
+        void LoadCredit()
+        {
+            _credit = LoadJson<CreditType>("Credit");
         }
 
         T LoadJson<T>(string json) where T : class

@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
         if (_hp <= 0)
         {
             _enemySpawn.DeCountEnemy();
-            GameManager.Instance.AddScore();
+            GameManager.Instance.AddCoin(1);
             Destroy(gameObject);
         }
     }

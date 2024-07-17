@@ -11,12 +11,17 @@ namespace Data
     {
         public int id;
         public string name;
-        public BunkerUpgrade count;
+        public BunkerUpgrade count;     // 업그레이드 수치
         public BunkerValue original;
-        public BunkerValue increase;
+        public BunkerValue increase;    // 증가량
+        //public BunkerValue cost;        // 업그레이드 비용
 
         BunkerValue _status;
         public BunkerValue Status { get { return _status; } }
+        BunkerValue _cost;
+        public BunkerValue Cost { get { return _cost; } }
+
+        // 초기값 세팅
         public virtual void SetValue()
         {
             _status.damage = original.damage + (increase.damage * count.damage);
@@ -28,6 +33,19 @@ namespace Data
             _status.defense = original.defense + (increase.defense * count.defense);
             _status.evasionRate = original.evasionRate + (increase.evasionRate * count.evasionRate);
         }
+
+        public virtual void SetCost()
+        {
+            _cost.damage = (int)Math.Pow(2,count.damage);
+            _cost.fireRate = (int)Math.Pow(2, count.fireRate);
+            _cost.attackRange = (int)Math.Pow(2, count.attackRange);
+            _cost.criticalProbability = (int)Math.Pow(2, count.criticalProbability);
+            _cost.criticalDamage = (int)Math.Pow(2, count.criticalDamage);
+            _cost.hp = (int)Math.Pow(2,count.hp);
+            _cost.defense = (int)Math.Pow(2,count.defense);
+            _cost.evasionRate = (int)Math.Pow(2, count.evasionRate);
+        }
+
         public virtual void IncreaseDamage()
         {
             count.damage++;
@@ -73,6 +91,35 @@ namespace Data
         {
             count++;
             SetValue();
+        }
+    }
+
+    [Serializable]
+    public class CreditType
+    {
+        public int id;
+        public string name;
+        public int cash;
+        public double coin;
+
+        public virtual void AddCoin(int _coin)
+        {
+            coin += _coin;
+        }
+
+        public virtual void SubCoin(int _coin)
+        {
+            coin -= _coin;
+        }
+
+        public virtual void AddCash(int _cash)
+        {
+            cash += _cash;
+        }
+
+        public virtual void SubCash(int _cash)
+        {
+            cash -= _cash;
         }
     }
     #region Struct
