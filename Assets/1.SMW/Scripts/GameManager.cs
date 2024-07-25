@@ -21,10 +21,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         _credit = DataManager.instance.Credit;
-        SetCredit();
+        UpdateCredit();
     }
 
-    void SetCredit()
+    /// <summary>
+    /// 재화 UI 업데이트
+    /// </summary>
+    public void UpdateCredit()
     {
         Text_Coin.text = _credit.coin.ToString();
         Text_Cash.text = _credit.cash.ToString();

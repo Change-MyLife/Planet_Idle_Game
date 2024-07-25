@@ -35,14 +35,22 @@ public class Bunker : MonoBehaviour
         Attack();
     }
 
+    /// <summary>
+    /// 플레이어 사망
+    /// </summary>
+    void Die()
+    {
+        Debug.Log("DIE");
+    }
+
     // 공격
     void Attack()
     {
         if (_time < 1)
         {
-            _time += Time.deltaTime * _data.Status.fireRate;
+            _time += Time.deltaTime;
         }
-        else if (_time >= 1)
+        if (_time >= 1 / _data.Status.fireRate)
         {
             _time = 0f;
 
@@ -75,7 +83,7 @@ public class Bunker : MonoBehaviour
 
         if (_data.Status.hp <= 0)
         {
-            Debug.Log("DIE");
+            Die();
         }
     }
 
@@ -108,5 +116,10 @@ public class Bunker : MonoBehaviour
     {
         _circleCollider.radius = _data.Status.attackRange;
         DrawradiusAround.ChangeRadius(_data.Status.attackRange);
+    }
+
+    public void DestoryTarget()
+    {
+        _target = null;
     }
 }

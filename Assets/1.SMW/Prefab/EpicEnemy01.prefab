@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemySpawn: {fileID: 0}
+  _index: 999
   _hp: 10
   _damage: 1
   Speed: 0.1

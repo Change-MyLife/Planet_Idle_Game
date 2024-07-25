@@ -1,16 +1,36 @@
 using Data;
 using NUnit.Framework.Constraints;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public class EnemyType
+{
+    public int index;
+    public string name;
+    public GameObject obj;
+    public Type type;
+
+    public enum Type
+    {
+        NORMAL,
+        EPIC
+    }
+}
+
 public class EnemySpawn : MonoBehaviour
 {
-    public WaveData _data;
-    public List<GameObject> Enemies;
-    private List<GameObject> _normalEnemies = new List<GameObject>();
-    private List<GameObject> _epicEnemies = new List<GameObject>();
+
+    WaveData _data;
+
+    public List<EnemyType> list_NormalEnemys = new List<EnemyType>();
+    public List<EnemyType> list_EpicEnemys = new List<EnemyType>();
+
+    Dictionary<int, Queue<GameObject>> dic_Enemy = new Dictionary<int, Queue<GameObject>>();
 
     public CircleCollider2D MinCircle;
     public CircleCollider2D MaxCircle;
@@ -26,8 +46,8 @@ public class EnemySpawn : MonoBehaviour
     int _enemyCount = 0;
     int _waveCount = 0;
 
-    int _normalIndex = 0;
-    int _epicIndex = 0;
+    int _normalIndex = 0;       // 노말 몹 번호
+    int _epicIndex = 999;         // 에픽 몹 번호
 
     private void Start()
     {
@@ -37,21 +57,21 @@ public class EnemySpawn : MonoBehaviour
         _minDistance = MinCircle.radius;
         _maxDistance = MaxCircle.radius;
 
-        BindEnemy();
+        init();
     }
 
-    void BindEnemy()
+    void init()
     {
-        foreach (GameObject enemy in Enemies)
+        for(int i = 0; i < list_NormalEnemys.Count; i++)
         {
-            if(enemy.layer == LayerMask.NameToLayer("NormalEnemy"))
-            {
-                _normalEnemies.Add(enemy);
-            }
-            else if(enemy.layer == LayerMask.NameToLayer("EpicEnemy"))
-            {
-                _epicEnemies.Add(enemy);
-            }
+            Queue<GameObject> pool = new Queue<GameObject>();
+            dic_Enemy.Add(list_NormalEnemys[i].index, pool);
+        }
+
+        for(int j = 0; j < list_EpicEnemys.Count; j++)
+        {
+            Queue<GameObject> pool = new Queue<GameObject>();
+            dic_Enemy.Add(list_EpicEnemys[j].index, pool);
         }
     }
 
@@ -68,6 +88,7 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    // 노말몹 생성
     void NormalEnmeySpawn()
     {
         _spawnCount = _data.Wave.enemy;
@@ -80,22 +101,44 @@ public class EnemySpawn : MonoBehaviour
                 break;
             }
 
-            if (_normalEnemies.Count == 0) return;
-            //spawn enemy
-            GameObject enemy = Instantiate(_normalEnemies[_normalIndex], transform, false);
+            EnemyType _type;
+            GameObject enemy = null;
+
+            if (dic_Enemy[_normalIndex].Count > 0)
+            {
+                enemy = dic_Enemy[_normalIndex].Dequeue();
+                enemy.gameObject.SetActive(true);
+            }
+            else
+            {
+                _type = list_NormalEnemys.FirstOrDefault(item => item.index == _normalIndex);
+                enemy = Instantiate(_type.obj, transform, false);
+            }
             enemy.transform.localPosition = RandomPosition();
-            enemy.GetComponent<Enemy>().SetValue(_data.Wave.hp, _data.Wave.damage);
+            enemy.GetComponent<Enemy>().SetNormal(_normalIndex, _data.Wave.hp, _data.Wave.damage);
             enemy.GetComponent<Enemy>()._enemySpawn = transform.GetComponent<EnemySpawn>();
             _enemyCount++;
         }
     }
 
+    // 에픽몹 생성
     void EpicEnmeySpawn()
     {
-        if(_epicEnemies.Count == 0) return;
-        GameObject enemy = Instantiate(_epicEnemies[_epicIndex], transform, false);
+        GameObject enemy;
+        if (dic_Enemy[_epicIndex].Count > 0)
+        {
+            enemy = dic_Enemy[_epicIndex].Dequeue();
+            enemy.gameObject.SetActive(true);
+        }
+        else
+        {
+            EnemyType _type;
+            _type = list_EpicEnemys.FirstOrDefault(item => item.index == _epicIndex);
+            enemy = Instantiate(_type.obj, transform, false);
+        }
         enemy.transform.localPosition = RandomPosition();
         enemy.GetComponent<Enemy>()._enemySpawn = transform.GetComponent<EnemySpawn>();
+        enemy.GetComponent<Enemy>().SetEpic(_epicIndex);
     }
 
     // 다음 웨이브
@@ -111,7 +154,8 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
-    public void DeCountEnemy()
+    // 노말 적 사망 시
+    public void DeCountNormalEnemy(GameObject _enemy, int _index)
     {
         _enemyCount--;
         _waveCount++;
@@ -121,14 +165,26 @@ public class EnemySpawn : MonoBehaviour
             _waveCount = 0;
             NextWave();
         }
+
+        // 풀에 반납
+        dic_Enemy[_index].Enqueue(_enemy);
+        _enemy.SetActive(false);
+    }
+
+
+    // 에픽 적 사망 시
+    public void DeCountEpicEnemy(GameObject _enemy, int _index)
+    {
+        dic_Enemy[_index].Enqueue(_enemy);
+        _enemy.SetActive(false);
     }
 
     Vector3 RandomPosition()
     {
         Vector3 v;
 
-        float distance = Random.Range(_minDistance, _maxDistance);
-        float angle = Random.Range(0, 360);
+        float distance = UnityEngine.Random.Range(_minDistance, _maxDistance);
+        float angle = UnityEngine.Random.Range(0, 360);
         float rad = angle * Mathf.Deg2Rad;
         v = new Vector3(Mathf.Cos(rad) * distance, Mathf.Sin(rad) * distance, _sortLayer);
 

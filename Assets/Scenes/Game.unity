@@ -2338,25 +2338,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb152b18b0768d4f8fc608a5616ac07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data:
-    id: 0
-    name: 
-    count: 0
-    original:
-      hp: 0
-      damage: 0
-      maxEnemy: 0
-      spawnTime: 0
-      enemy: 0
-    increase:
-      hp: 0
-      damage: 0
-      maxEnemy: 0
-      spawnTime: 0
-      enemy: 0
-  Enemies:
-  - {fileID: 5956552461555954478, guid: 9cd27f573339bc241913ebe7662b2f1e, type: 3}
-  - {fileID: 5956552461555954478, guid: 97edce30e73db0a45a104e4d85628860, type: 3}
+  list_NormalEnemys:
+  - index: 0
+    name: defalt
+    obj: {fileID: 5956552461555954478, guid: 9cd27f573339bc241913ebe7662b2f1e, type: 3}
+  list_EpicEnemys:
+  - index: 999
+    name: defalt
+    obj: {fileID: 5956552461555954478, guid: 97edce30e73db0a45a104e4d85628860, type: 3}
   MinCircle: {fileID: 1293653889}
   MaxCircle: {fileID: 1293653888}
   Text_Wave: {fileID: 75882607}

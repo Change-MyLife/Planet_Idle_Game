@@ -23,6 +23,7 @@ namespace Data
                 Destroy(gameObject);
             }
 
+            Application.targetFrameRate = 30;
             init();
         }
 

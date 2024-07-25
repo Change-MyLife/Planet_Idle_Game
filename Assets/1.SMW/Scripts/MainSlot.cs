@@ -42,6 +42,7 @@ public class MainSlot : MonoBehaviour
             DataManager.instance.Bunker.IncreaseDamage();
             DataManager.instance.Bunker.SetCost();
             Text_AttackDmg.text = "dmg : " + DataManager.instance.Bunker.Cost.damage;
+            GameManager.Instance.UpdateCredit();
         }
     }
 
@@ -53,6 +54,7 @@ public class MainSlot : MonoBehaviour
             _bunker.SetAttackRange();
             DataManager.instance.Bunker.SetCost();
             Text_AttackRange.text = "range : " + DataManager.instance.Bunker.Cost.attackRange;
+            GameManager.Instance.UpdateCredit();
         }
     }
 
@@ -64,16 +66,17 @@ public class MainSlot : MonoBehaviour
             DataManager.instance.Bunker.IncreaseFireRate();
             DataManager.instance.Bunker.SetCost();
             Text_AttackSpeed.text = "firerate : " + DataManager.instance.Bunker.Cost.fireRate;
+            GameManager.Instance.UpdateCredit();
         }
     }
 
     void OnClickCriticalProbabilityButton()
     {
-
+        GameManager.Instance.UpdateCredit();
     }
 
     void OnClickCriticalDmageButton()
     {
-
+        GameManager.Instance.UpdateCredit();
     }
 }

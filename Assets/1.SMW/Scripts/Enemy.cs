@@ -10,9 +10,12 @@ public class Enemy : MonoBehaviour
     public EnemySpawn _enemySpawn;
 
     [Header("Status")]
+    int _index;
     public float _hp;
     public float _damage;
     public float Speed;
+
+    EnemyType.Type _type;
 
     [Header("ETC")]
     public GameObject Effect;
@@ -23,10 +26,26 @@ public class Enemy : MonoBehaviour
         _bunker = FindFirstObjectByType<Bunker>();
     }
 
-    public void SetValue(float hp, float damage)
+    private void OnEnable()
     {
+        isAttack = false;
+    }
+
+    // 畴富 各 技泼
+    public void SetNormal(int index, float hp, float damage)
+    {
+        _type = EnemyType.Type.NORMAL;
+
+        _index = index;
         _hp = hp;
         _damage = damage;
+    }
+
+    // 俊侨 各 技泼
+    public void SetEpic(int index)
+    {
+        _type = EnemyType.Type.EPIC;
+        _index = index;
     }
 
     private void Update()
@@ -48,9 +67,29 @@ public class Enemy : MonoBehaviour
         _hp -= _dmg;
         if (_hp <= 0)
         {
-            _enemySpawn.DeCountEnemy();
-            GameManager.Instance.AddCoin(1);
-            Destroy(gameObject);
+            Die();
+        }
+    }
+
+    // 磷菌阑 版快
+    public void Die()
+    {
+        switch (_type)
+        {
+            case EnemyType.Type.NORMAL:
+                {
+                    GameManager.Instance.AddCoin(1);
+                    _enemySpawn.DeCountNormalEnemy(gameObject, _index);
+                    _bunker.DestoryTarget();
+                }
+                break;
+            case EnemyType.Type.EPIC:
+                {
+                    GameManager.Instance.AddCoin(10);
+                    _enemySpawn.DeCountEpicEnemy(gameObject, _index);
+                    _bunker.DestoryTarget();
+                }
+                break;
         }
     }
 
